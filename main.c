@@ -5,9 +5,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "head.h"
-#define ROWS 150
 
 struct termios preoption;
+#define ROWS 150
+
+struct eroww erow[ROWS];
+
 int enableRawMode(int fd){
     struct termios options;
 
@@ -84,7 +87,7 @@ int finish(int fd){
 }
 
 int main(int argc, char *argv[]){
-    struct eroww erow[ROWS];
+    
     char *name;
     int linenumber=0;
     if(argv[1]) {
@@ -109,16 +112,15 @@ int main(int argc, char *argv[]){
 
 
     int fd;
-    int x,y;
+    int x[4]={0,0,linenumber,0};//x,y,rows,startrow
     init(fd);
     
     char c = 0;
     int startRow = 0;
     while(1){
-        reNew(erow,startRow,x,y,linenumber,name);
+        reNew(erow , x , name);
         scanf("%c", &c);
-        inputProcess(c,erow,&startRow,&x,&y);
-
+        inputProcess(c , erow ,x);
         if(c == 'q') break;
     }
 
