@@ -6,10 +6,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-int inputProcess(char c);
+int inputProcess(char c,struct eroww* erow,int *startRow,int *x,int *y);
 int bufferProcess(char c);
 int bufferAdd(char c);
-int reNew(struct eroww* erow,int startRow);
+int reNew(struct eroww* erow,int startRow,int x,int y,int rows,char* name);
 
 typedef struct eroww {
     char* data;

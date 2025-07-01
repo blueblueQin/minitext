@@ -7,7 +7,7 @@
 #include "head.h"
 
 
-int inputProcess(char c){
+int inputProcess(char c,struct eroww* erow,int *startRow,int *x,int *y){
 
     
     if(c == 27){//上下右左

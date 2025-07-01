@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "head.h"
+#define ROWS 150
 
 struct termios preoption;
 int enableRawMode(int fd){
@@ -62,7 +63,7 @@ int disableRawMode(int fd){
 
 
 int init(int fd){
-    struct eroww erow[100];
+    
     printf("\033[2J\033[H");
     fd = STDIN_FILENO;
     if (fd < 0) {
@@ -82,16 +83,41 @@ int finish(int fd){
     return 0;
 }
 
-int main(){
+int main(int argc, char *argv[]){
+    struct eroww erow[ROWS];
+    char *name;
+    int linenumber=0;
+    if(argv[1]) {
+        name = argv[1];
+        FILE *inputfile = fopen(name, "r");
+        if (inputfile == NULL) {
+            perror("Failed to open file \n");
+            return 0;
+        }
+        char line[1024];
+        while (fgets(line, sizeof(line), inputfile)){
+            if(line){
+                strcpy(erow[linenumber].data,line);
+                linenumber++;
+                continue;
+            }
+        
+        }
+    }
+    else linenumber=1;
+
+
 
     int fd;
-    int *x,*y;
+    int x,y;
     init(fd);
     
     char c = 0;
+    int startRow = 0;
     while(1){
+        reNew(erow,startRow,x,y,linenumber,name);
         scanf("%c", &c);
-        inputProcess(c);
+        inputProcess(c,erow,&startRow,&x,&y);
 
         if(c == 'q') break;
     }

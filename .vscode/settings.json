@@ -9,6 +9,7 @@
         "stat.h": "c",
         "wait.h": "c",
         "test": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "head.h": "c"
     }
 }
