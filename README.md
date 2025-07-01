@@ -1,8 +1,19 @@
 # minitext
 代码有以下几部分
-main.c
+    main.c
 主函数部分负责初始化，以及输入
-inputProcess.c
+初始化部分包括：识别指令并读取文件、修改termios结构体
+然后进入等待输入状态
+检测到q之后执行退出程序，还原termios结构体
+    inputProcess.c
 输入处理部分识别从主函数输入的符号，并执行相关功能
-display.c
+采用有限状态机和ANSI转义序列实现相关功能
+    display.c
 展示函数负责整理目前已有的数据展示到窗口上
+在最后一行展示文件状态
+
+结构体数组erow{
+    data
+    length
+}
+负责存储并展示数据

@@ -19,6 +19,6 @@ int reNew(struct eroww* erow , int x[4] , char* name){
         else continue;
         if(i>20) name = "No Name";
     }    
-    printf("Name:%s row:%d//%d\n",name,x[1],x[2]);
+    printf("Name:%s row:%d/%d\n",name,x[1],x[2]);
     return 0;
 }
