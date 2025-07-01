@@ -4,9 +4,9 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "head.h"
 
 struct termios preoption;
-
 int enableRawMode(int fd){
     struct termios options;
 
@@ -31,14 +31,15 @@ int enableRawMode(int fd){
     options.c_cflag &= ~CSTOPB; // 1 停止位
 
     // 配置输入输出模式
-    options.c_iflag &= ~(IXON | IXOFF | IXANY | BRKINT | INPCK | ISTRIP); // 关闭软件流控
-    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // 关闭规范模式
+    options.c_iflag &= ~(IXON | IXOFF | IXANY | BRKINT | INPCK | ISTRIP | IGNBRK 
+                    | PARMRK | ISTRIP| INLCR | IGNCR | ICRNL ); // 关闭软件流控
+    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG | IEXTEN | ECHONL); // 关闭规范模式
     options.c_oflag &= ~OPOST; // 关闭输出处理
     
 
     // 设置超时
     options.c_cc[VMIN]  = 1;
-    options.c_cc[VTIME] = 1;
+    options.c_cc[VTIME] = 5;
 
     // 刷新缓冲区并应用配置
     tcflush(fd, TCIFLUSH);
@@ -59,35 +60,44 @@ int disableRawMode(int fd){
     }
 }
 
-int main(){
-    int fd=0;
-    for (int i=0; i<12; i++){
-        fd = STDIN_FILENO; //open("/dev/ttyS1", O_RDWR | O_NOCTTY);
-        if (fd < 0) {
-            continue;
-        }
-    }
+
+int init(int fd){
+    struct eroww erow[100];
+    printf("\033[2J\033[H");
+    fd = STDIN_FILENO;
     if (fd < 0) {
             perror("open serial port error");
             return -1;
         }
 
     if (enableRawMode(fd) == 0) {
-        printf("Serial port configured successfully\n");
     }
+    return 0;
+}
+int finish(int fd){
+    printf("\033[2J\033[H");
+    if (disableRawMode(fd) == 0) {
+    }
+    close(fd);
+    return 0;
+}
 
+int main(){
+
+    int fd;
+    int *x,*y;
+    init(fd);
+    
     char c = 0;
     while(1){
         scanf("%c", &c);
-        printf("%d",c);
+        inputProcess(c);
+
         if(c == 'q') break;
     }
 
-    if (disableRawMode(fd) == 0) {
-        printf("Serial port recovery successfully\n");
-    }
-    close(fd);
-
-
+    
+    finish(fd);
     return 0;
 }
+
